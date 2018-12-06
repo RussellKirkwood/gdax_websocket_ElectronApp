@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+.bodycontainer { max-height: 250px; width: 100%; margin: 0; overflow-y: auto; }
+.table-scrollable { margin: 0; padding: 0; }
+
+.table-condensed{
+  font-size: 10px;
+}
+</style>
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>GDAX Alerts</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="node_modules/css/landing-page.css" rel="stylesheet">
+
+<!-- Insert this line above script imports  -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/popper.js/dist/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;</script>
+
+  </head>
+
+  <script>
+    
+const ipcRenderer = require('electron').ipcRenderer;
+
+//console.log(ipcRenderer.sendSync('synchronous-message', 'ping')); // gets message from main.js
+
+// This looks for message from main.js and puts into table
+ipcRenderer.on('asynchronous-reply', function(event, arg) {
+  $("#responseTable tbody").prepend("<tr><td>" + Date() + "</td><td>" + arg + "</td></tr>");
+  //$('#status').text(arg);
+  //console.log(arg); // gets message from main.js
+});
+
+// renderer process
+//var ipcRenderer = require('electron').ipcRenderer;
+ipcRenderer.on('store-data', function (store) {
+    console.log(store);
+});
+
+const ipc = require('electron').ipcRenderer;
+
+ipc.on('message', (event, message) => {
+    console.log(message); // logs out "Hello second window!"
+})
+
+
+function myTimedCalltoMain() {
+// This sends message to main.js
+ipcRenderer.send('asynchronous-message', '');
+    // console.log(' each 1 second...');
+}
+
+var myVar = setInterval(myTimedCalltoMain, 5000);
+
+  </script>
+
+  <body>   
+
+      <div class="container">
+  <div class="jumbotron">
+    <h1>Bootstrap Tutorial</h1> 
+    <p>Bootstrap is the most popular HTML, CSS, and JS framework for developing
+    responsive, mobile-first projects on the web.</p> 
+  </div>
+  <p>This is some text.</p> 
+  <p>This is another text.</p> 
+</div>
+
+    <!-- Header -->
+    <header class="intro-header">
+      <div class="container">
+        <div class="text-primary">
+          <h1>LiteCoin Exchange Alerts</h1>          
+          <hr class="intro-divider">          
+        </div>
+      </div>
+    </header>
+
+<!-- Page Content -->
+<section class="content-section-a">    
+  <div class="container">
+  
+  <div class="row">
+    <div class="col-sm-4">Current Value: </div>
+    <div class="col-sm-8">XXXX</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">Volume Per Hour: </div>
+    <div class="col-sm-8"></div>
+    <div class="col-sm-5">Sell: </div>
+    <div class="col-sm-7">{volume]</div>
+    <div class="col-sm-5">Buy: </div>
+    <div class="col-sm-7">{volume}</div>
+  </div>     
+
+  </div>
+
+  <div class="container">
+      <div class="row">
+          <div class="col-sm-4">Orders Action: </div>
+          <div class="col-sm-8"></div>          
+      </div>     
+
+              <div class="table-responsive">
+                  <table class="table table-striped table-hover table-condensed">
+                      <thead>
+                          <tr>
+                              <th>Date/Time</th>
+                              <th>Volume</th>    
+                              <th>Trade</th>    
+                                                        
+                          </tr>
+                      </thead>
+                  </table>
+                  <div class="bodycontainer scrollable">
+                  <table class="table table-hover table-striped table-condensed table-scrollable" id="responseTable">
+                      <tbody>                        
+                      </tbody>
+                  </table>
+                  </div>                  
+                  </div>    
+          </div>
+          <!-- /.container -->
+ </section>
+        
+ <!-- Footer -->    
+    <footer>
+      <div class="container">
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a href="https://www.sharptooth.com">Sharptooth</a>
+          </li>          
+        </ul>
+        <p class="copyright text-muted small">Copyright &copy; Sharptooth 2018. All Rights Reserved</p>
+      </div>
+    </footer>
+
+    
+
+  </body>
+
+</html>
