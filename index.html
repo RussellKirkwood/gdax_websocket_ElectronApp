@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+.bodycontainer { max-height: 250px; width: 100%; margin: 0; overflow-y: auto; }
+.table-scrollable { margin: 0; padding: 0; }
+
+.table-condensed{
+  font-size: 10px;
+}
+</style>
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>GDAX Data</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="node_modules/css/landing-page.css" rel="stylesheet">
+
+<!-- Insert this line above script imports  -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/popper.js/dist/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- Insert this line after script imports -->
+<script>if (window.module) module = window.module;
+var buyVolume = 0;
+var sellVolume = 0;
+</script>
+
+  </head>
+
+  <script>
+      $(document).ready(function() { 
+        var d = new Date(); 
+  $("#startDateTime").text(d.toISOString());
+
+  
+});
+
+    
+const ipc = require('electron').ipcRenderer;
+
+ipc.on('message', (event, message) => {
+    //$('#responseTable tr:last').remove();
+    $("#currentValue").text(message.price);
+    $("#responseTable").find("tr:gt(10)").remove();
+    if (message.size == undefined)
+    {
+       if (message.side == 'sell')
+       {
+           var sellVolumeNum = parseFloat(message.remaining_size); //Output will be 23.25
+            sellVolume = sellVolume + parseFloat(sellVolumeNum);           
+       }
+       else
+       {
+           var buyVolumeNum = parseFloat(message.remaining_size); //Output will be 23.25        
+           //buyVolume = (buyVolume + parseFloat(buyVolumeNum));                     
+       }
+       
+       $("#responseTable tbody").prepend("<tr><td class=text-left>" + message.time + "</td><td class=text-left>" + message.price + "</td><td class=text-left>" + message.remaining_size + "</td><td class=text-left>" + message.side + "</td></tr>");
+    }
+    else
+    {
+
+if (message.side == 'sell')
+       {
+           var sellVolumeNum = parseFloat(message.size); //Output will be 23.25
+            sellVolume = sellVolume + parseFloat(sellVolumeNum);           
+       }
+       else
+       {
+           var buyVolumeNum = parseFloat(message.size); //Output will be 23.25        
+           buyVolume = (buyVolume + parseFloat(buyVolumeNum));                     
+       }
+
+ $("#responseTable tbody").prepend("<tr><td class=text-left>" + message.time + "</td><td class=text-left>" + message.price + "</td><td class=text-left>" + message.size + "</td><td class=text-left>" + message.side + "</td></tr>");
+    }
+$("#sellVolume").text(sellVolume.toString());
+$("#buyVolume").text(buyVolume.toString());
+    //console.log(message.price); // logs out "Hello second window!"
+})
+
+  </script>
+
+  <body>   
+    <!-- Header -->
+    <header class="intro-header">
+      <div class="container">
+        <div class="text-primary">
+          <h1>LiteCoin Exchange Data</h1>          
+          <hr class="intro-divider">          
+        </div>
+      </div>
+    </header>
+
+<!-- Page Content -->
+<section class="content-section-a">    
+  <div class="container">
+  
+  <div class="row">
+    <div class="col-sm-4 text-primary">Last Activity Price: </div>
+    <div class="col-sm-8" id="currentValue"></div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 text-primary">Volume Since: </div>
+    <div class="col-sm-8" id="startDateTime"></div>
+  </div>
+ <div class="row">
+    <div class="col-sm-5">Sell: </div>
+    <div class="col-sm-7" id="sellVolume">{volume]</div>
+    <div class="col-sm-5">Buy: </div>
+    <div class="col-sm-7" id="buyVolume">{volume}</div>
+  </div>     
+
+  </div>
+
+  <div class="container">
+      <div class="row"><br />
+          </div>
+
+      <div class="row">
+          <div class="col-sm-4 text-primary">Orders Action: </div>
+          <div class="col-sm-8"></div>          
+      </div>     
+
+              <div class="table-responsive">
+                  <table class="table table-striped table-hover table-condensed">
+                      <thead>
+                          <tr>
+                              <th>Date/Time</th>
+                              <th>Price</th>    
+                              <th>Size</th>  
+                              <th>Side</th>  
+                                                        
+                          </tr>
+                      </thead>
+                  </table>
+                  <div class="bodycontainer scrollable">
+                  <table class="table table-hover table-striped table-condensed table-scrollable" id="responseTable">
+                      <tbody>                        
+                      </tbody>
+                  </table>
+                  </div>                  
+                  </div>    
+          </div>
+          <!-- /.container -->
+ </section>
+        
+<div class="row"><br />
+          </div>
+
+ <!-- Footer -->    
+    <footer>
+      <div class="container">
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a href="https://www.sharptooth.com">Sharptooth</a>
+          </li>          
+        </ul>
+        <p class="copyright text-muted small">Copyright &copy; Sharptooth 2018. All Rights Reserved</p>
+      </div>
+    </footer>
+
+    
+
+  </body>
+
+</html>
