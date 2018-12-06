@@ -3,7 +3,6 @@ const path = require('path')
 const url = require('url')
 const https = require("https");
 const fetch = require("node-fetch");
-const apiURL1 = "https://www.sharptooth.com/api/";
 const Gdax = require('gdax');
 
 
