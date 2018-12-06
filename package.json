@@ -17,6 +17,6 @@
     "popper.js": "^1.12.9"
   },
   "devDependencies": {
-    "electron": "1.7.10"
+    "electron": "3.7.10"
   }
 }
